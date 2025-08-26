@@ -101,6 +101,12 @@ st.markdown("""
 
 # Sidebar for additional information
 st.sidebar.title("📊 About This Tool")
+
+# Add cache clearing button (temporary - remove after fixing)
+if st.sidebar.button("🔄 Clear Cache & Reload Model"):
+    st.cache_resource.clear()
+    st.rerun()
+
 st.sidebar.markdown("""
 This diabetes prediction tool uses machine learning to assess diabetes risk based on key health indicators.
 
