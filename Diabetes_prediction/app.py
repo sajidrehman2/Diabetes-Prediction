@@ -17,14 +17,8 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
 <style>
-    .main > div {
-        padding: 2rem 1rem;
-    }
-    
-    .stApp > header {
-        background-color: transparent;
-    }
-    
+    .main > div { padding: 2rem 1rem; }
+    .stApp > header { background-color: transparent; }
     .title-container {
         background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
         padding: 2rem;
@@ -33,7 +27,6 @@ st.markdown("""
         text-align: center;
         color: white;
     }
-    
     .metric-card {
         background-color: #f8f9fa;
         padding: 1rem;
@@ -41,7 +34,6 @@ st.markdown("""
         border-left: 4px solid #667eea;
         margin: 0.5rem 0;
     }
-    
     .info-box {
         background-color: #e3f2fd;
         padding: 1rem;
@@ -49,7 +41,6 @@ st.markdown("""
         border-left: 4px solid #2196f3;
         margin: 1rem 0;
     }
-    
     .warning-box {
         background-color: #fff3e0;
         padding: 1rem;
@@ -57,7 +48,6 @@ st.markdown("""
         border-left: 4px solid #ff9800;
         margin: 1rem 0;
     }
-    
     .success-box {
         background-color: #e8f5e8;
         padding: 1rem;
@@ -65,7 +55,6 @@ st.markdown("""
         border-left: 4px solid #4caf50;
         margin: 1rem 0;
     }
-    
     .danger-box {
         background-color: #ffebee;
         padding: 1rem;
@@ -73,17 +62,14 @@ st.markdown("""
         border-left: 4px solid #f44336;
         margin: 1rem 0;
     }
-    
-    .sidebar .sidebar-content {
-        background-color: #f5f5f5;
-    }
+    .sidebar .sidebar-content { background-color: #f5f5f5; }
 </style>
 """, unsafe_allow_html=True)
 
 # Load the model safely
 @st.cache_resource
 def load_model():
-    model_path = "Diabetes_prediction/Diabetes_model.pkl"  # <-- change this to your actual filename
+    model_path = "Diabetes_prediction/log_model.pkl"  # ✅ Corrected filename
     if not os.path.exists(model_path):
         st.error(f"Model file not found at {model_path}. Please upload it to the repository.")
         return None
@@ -119,7 +105,6 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.markdown("## 📋 Patient Information")
     
-    # Group related inputs
     with st.expander("👤 Personal Details", expanded=True):
         col_a, col_b = st.columns(2)
         with col_a:
@@ -140,8 +125,6 @@ with col1:
 
 with col2:
     st.markdown("## 📊 Health Indicators")
-    
-    # Display normal ranges
     st.markdown("""
     <div class="info-box">
         <h4>📈 Normal Ranges</h4>
@@ -153,8 +136,6 @@ with col2:
         </ul>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Risk factors information
     st.markdown("""
     <div class="warning-box">
         <h4>⚠️ Risk Factors</h4>
@@ -172,7 +153,6 @@ with col2:
 st.markdown("---")
 st.markdown("## 🔮 Prediction Results")
 
-# Create prediction button with custom styling
 col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
 with col_btn2:
     predict_button = st.button("🔍 Analyze Diabetes Risk", use_container_width=True, type="primary")
@@ -186,19 +166,15 @@ if predict_button:
         </div>
         """, unsafe_allow_html=True)
     else:
-        # Create an input array
         input_features = np.array([[pregnancies, glucose, blood_pressure,
                                     skin_thickness, insulin, bmi, dpf, age]])
         
-        # Make a prediction
         prediction = model.predict(input_features)[0]
         probability = model.predict_proba(input_features)[0][1] * 100
         
-        # Create two columns for results
         result_col1, result_col2 = st.columns([1, 1])
         
         with result_col1:
-            # Display main result
             if prediction == 1:
                 st.markdown(f"""
                 <div class="danger-box">
@@ -207,7 +183,6 @@ if predict_button:
                     <p style="font-size: 1.1rem;">Risk Probability: <strong>{probability:.1f}%</strong></p>
                 </div>
                 """, unsafe_allow_html=True)
-                
                 st.markdown("""
                 <div class="warning-box">
                     <h4>🏥 Recommended Actions</h4>
@@ -219,7 +194,6 @@ if predict_button:
                     </ul>
                 </div>
                 """, unsafe_allow_html=True)
-                
             else:
                 st.markdown(f"""
                 <div class="success-box">
@@ -228,7 +202,6 @@ if predict_button:
                     <p style="font-size: 1.1rem;">Risk Probability: <strong>{probability:.1f}%</strong></p>
                 </div>
                 """, unsafe_allow_html=True)
-                
                 st.markdown("""
                 <div class="info-box">
                     <h4>🌟 Preventive Measures</h4>
@@ -242,7 +215,6 @@ if predict_button:
                 """, unsafe_allow_html=True)
         
         with result_col2:
-            # Create a gauge chart for probability
             fig = go.Figure(go.Indicator(
                 mode = "gauge+number+delta",
                 value = probability,
@@ -258,24 +230,13 @@ if predict_button:
                         {'range': [50, 75], 'color': "orange"},
                         {'range': [75, 100], 'color': "red"}
                     ],
-                    'threshold': {
-                        'line': {'color': "black", 'width': 4},
-                        'thickness': 0.75,
-                        'value': 50
-                    }
+                    'threshold': {'line': {'color': "black", 'width': 4}, 'thickness': 0.75, 'value': 50}
                 }
             ))
-            
-            fig.update_layout(
-                height=300,
-                margin=dict(l=0, r=0, t=50, b=0),
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)"
-            )
-            
+            fig.update_layout(height=300, margin=dict(l=0, r=0, t=50, b=0),
+                              paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
             st.plotly_chart(fig, use_container_width=True)
             
-            # Display input summary
             st.markdown("### 📄 Input Summary")
             summary_data = {
                 "Parameter": ["Pregnancies", "Glucose", "Blood Pressure", "Skin Thickness", 
@@ -284,8 +245,7 @@ if predict_button:
                          f"{skin_thickness:.1f}", f"{insulin:.1f}", f"{bmi:.1f}", 
                          f"{dpf:.3f}", age]
             }
-            
-            for i, (param, val) in enumerate(zip(summary_data["Parameter"], summary_data["Value"])):
+            for param, val in zip(summary_data["Parameter"], summary_data["Value"]):
                 st.write(f"**{param}:** {val}")
 
 # Footer
@@ -296,3 +256,4 @@ st.markdown(f"""
     <p><em>This tool is for educational purposes only. Always consult healthcare professionals for medical advice.</em></p>
 </div>
 """, unsafe_allow_html=True)
+
