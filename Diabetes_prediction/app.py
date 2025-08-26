@@ -83,7 +83,8 @@ st.markdown("""
 # Load the model safely
 @st.cache_resource
 def load_model():
-    model_path = "Diabetes_prediction/Diabetes_model.pkl"  # <-- change this to your actual filename
+    # ✅ correct file name from your repo
+    model_path = "Diabetes_prediction/log_model.pkl"
     if not os.path.exists(model_path):
         st.error(f"Model file not found at {model_path}. Please upload it to the repository.")
         return None
@@ -102,7 +103,7 @@ st.markdown("""
 # Sidebar for additional information
 st.sidebar.title("📊 About This Tool")
 
-# Add cache clearing button (temporary - remove after fixing)
+# Add cache clearing button
 if st.sidebar.button("🔄 Clear Cache & Reload Model"):
     st.cache_resource.clear()
     st.rerun()
@@ -178,7 +179,7 @@ with col2:
 st.markdown("---")
 st.markdown("## 🔮 Prediction Results")
 
-# Create prediction button with custom styling
+# Create prediction button
 col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
 with col_btn2:
     predict_button = st.button("🔍 Analyze Diabetes Risk", use_container_width=True, type="primary")
@@ -248,14 +249,14 @@ if predict_button:
                 """, unsafe_allow_html=True)
         
         with result_col2:
-            # Create a gauge chart for probability
+            # Gauge chart for probability
             fig = go.Figure(go.Indicator(
-                mode = "gauge+number+delta",
-                value = probability,
-                domain = {'x': [0, 1], 'y': [0, 1]},
-                title = {'text': "Diabetes Risk %"},
-                delta = {'reference': 50},
-                gauge = {
+                mode="gauge+number+delta",
+                value=probability,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                title={'text': "Diabetes Risk %"},
+                delta={'reference': 50},
+                gauge={
                     'axis': {'range': [None, 100]},
                     'bar': {'color': "darkred" if probability > 50 else "darkgreen"},
                     'steps': [
@@ -291,7 +292,7 @@ if predict_button:
                          f"{dpf:.3f}", age]
             }
             
-            for i, (param, val) in enumerate(zip(summary_data["Parameter"], summary_data["Value"])):
+            for param, val in zip(summary_data["Parameter"], summary_data["Value"]):
                 st.write(f"**{param}:** {val}")
 
 # Footer
@@ -302,3 +303,4 @@ st.markdown(f"""
     <p><em>This tool is for educational purposes only. Always consult healthcare professionals for medical advice.</em></p>
 </div>
 """, unsafe_allow_html=True)
+
